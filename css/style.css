@@ -11,8 +11,16 @@ body {
     height: 100%;
 }
 
-#fruits-ul {
+.fruits-ul {
     list-style: none;
     display: flex;
     flex-direction: column;
+}
+
+.delete-fruit-btn {
+    width: 20px;
+    height: 20px;
+    margin: 0 0 1rem 1rem;
+    padding: 0;
+    color: red;
 }

@@ -1,7 +1,8 @@
 // DOM Elements
-const fruitsUL = document.getElementById('fruits-ul');
-const fruitsInput = document.getElementById('fruit-input');
-const deleteButton = document.getElementById('delete-Button');
+const fruitsUL = document.getElementById('fruitsUL');
+const fruitsInput = document.getElementById('fruitInput');
+const addButton = document.getElementById('addBtn');
+const deleteButton = document.getElementById('deleteBtn');
 
 // Custom Variables
 let fruitsCart = [];
@@ -9,28 +10,46 @@ let fruitsCart = [];
 
 fruitsInput.addEventListener('keyup', (e) => {
     if (e.keyCode === 13) {
-        if (isCartFull()) {
-            alert("Ibi Ko'payib Ketopti Hay Qara Lekin!");
-            return;
-        }
-
-        addFruitToCart(e.target.value);
-        updateULElement();
-        clearInput();
-
+        triggerFruitAddition(e.target.value);
     }
 });
 
-deleteButton.onclick = function randomDell() {
-    let randomIndex = Math.floor(Math.random * fruitsCart.length);
-    fruitsCart.slice(randomIndex, 1);
+addButton.addEventListener('click', () => {
+    triggerFruitAddition(fruitsInput.value);
+});
 
+deleteButton.addEventListener('click', (e) => {
+    let numbersOfItems = fruitsCart.length;
+    let max = numbersOfItems;
+
+    const randomIndex = Math.floor(max * Math.random());
+    delete fruitsCart[randomIndex];
+
+    fruitsCart = fruitsCart.filter((fruit) => {
+        if (fruit !== undefined) {
+            return fruit;
+        }
+    });
     updateULElement();
+});
+
+function triggerFruitAddition(fruit) {
+    if (isCartFull()) {
+        alert("Ibi Ko'payib Ketopti Hay Qara Lekin!");
+        return;
+    }
+
+    addFruitToCart(fruit);
+    updateULElement();
+    clearInput();
 
 }
 
 function addFruitToCart(fruit) {
-    fruitsCart.push(fruit);
+    fruitsCart.push({
+        name: fruit,
+        id: fruitsCart.length
+    });
 }
 
 function updateULElement() {
@@ -38,7 +57,31 @@ function updateULElement() {
 
     fruitsCart.forEach((fruit) => {
         const fruitLI = document.createElement('li');
-        fruitLI.innerText = fruit;
+        fruitLI.className = "fruit-li";
+        fruitLI.id = fruit.id
+
+        const fruitSpan = document.createElement('span');
+        fruitSpan.innerText = fruit.name;
+
+        const deleteFruitBtn = document.createElement('button');
+        deleteFruitBtn.className = "delete-fruit-btn";
+        deleteFruitBtn.innerText = 'X'
+
+        deleteFruitBtn.addEventListener('click', () => {
+            console.log("Number of elements in array " + fruitsCart.length);
+            delete fruitsCart[fruit.id];
+
+            fruitsCart = fruitsCart.filter((fruit) => {
+                if (fruit !== undefined) {
+                    return fruit;
+                }
+            });
+            updateULElement();
+            console.log("Number of elements in array after deletion and filteration " + fruitsCart.length)
+        })
+        fruitLI.appendChild(fruitSpan);
+        fruitLI.appendChild(deleteFruitBtn);
+
         fruitsUL.appendChild(fruitLI);
     });
 }
